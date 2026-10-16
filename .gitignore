@@ -1,0 +1,34 @@
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Secrets — never commit these
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+key.properties
+google-services.json
+GoogleService-Info.plist
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.db
+backend/instance/
+
+# Flutter / native build output
+flutter/build/
+flutter/.dart_tool/
+flutter/ios/Pods/
+
+# Large media (upload videos to Upwork/YouTube instead)
+*.webm
+*.mp4
+*.mov
