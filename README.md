@@ -9,17 +9,25 @@
 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green">
 </p>
 
-**My Expance** is a full-stack expense tracker with an AI assistant. Type *"spent 450 on lunch"* or *"uber 220 yesterday"* and the agent logs it in the right category. Ask *"how much on food this month?"* and it answers from your real data. Built with a Flutter mobile app, a Flask API and a tool-calling LLM agent.
+**My Expance** is a full-stack expense tracker with an AI assistant. Type *"spent 450 on lunch"* or *"uber 220 yesterday"* and the agent logs it in the right category. Ask *"how much on food this month?"* and it answers from your real data. Built with a Flutter mobile app (tested on Android and iOS), a Flask API and a tool-calling LLM agent.
 
 <p align="center"><img src="docs/media/demo.gif" alt="Switching between the six chart styles" width="300"></p>
 
 ## Screenshots
 
+### Android
 | Talk to log | Six chart styles | Budget jar | Add expense |
 |---|---|---|---|
 | <img src="docs/media/screenshots/11-assistant-logged.png" width="200"> | <img src="docs/media/screenshots/02-arc.png" width="200"> | <img src="docs/media/screenshots/06-budget-jar.png" width="200"> | <img src="docs/media/screenshots/08-add-expense.png" width="200"> |
 | **Donut (light)** | **Bubbles** | **Last 7 days** | **Settings** |
 | <img src="docs/media/screenshots/12-donut-light.png" width="200"> | <img src="docs/media/screenshots/05-bubbles.png" width="200"> | <img src="docs/media/screenshots/04-bar-last-7-days.png" width="200"> | <img src="docs/media/screenshots/13-settings-light.png" width="200"> |
+
+### iOS
+| Arc (light) | Bubbles | Add expense | Expenses |
+|---|---|---|---|
+| <img src="docs/media/screenshots/ios-02-arc-light.png" width="200"> | <img src="docs/media/screenshots/ios-03-bubbles-light.png" width="200"> | <img src="docs/media/screenshots/ios-04-add-expense.png" width="200"> | <img src="docs/media/screenshots/ios-05-expenses.png" width="200"> |
+| **Assistant (dark)** | **Classic (dark)** | **Donut (dark)** | **Settings (dark)** |
+| <img src="docs/media/screenshots/ios-07-assistant-dark.png" width="200"> | <img src="docs/media/screenshots/ios-06-classic-dark.png" width="200"> | <img src="docs/media/screenshots/ios-09-donut-dark.png" width="200"> | <img src="docs/media/screenshots/ios-11-settings-dark.png" width="200"> |
 
 ## Features
 - **Talk to log.** An LLM agent turns plain sentences into expenses, edits or deletes them, and answers spending questions. Every number it states comes from a tool call, never from the model's imagination.
@@ -32,7 +40,7 @@
 ## Tech stack
 | Layer | Technology |
 |---|---|
-| Mobile | Flutter (Dart), Provider, Material 3, CustomPaint charts, Firebase Auth & Crashlytics |
+| Mobile | Flutter (Dart) for Android & iOS, Provider, Material 3, CustomPaint charts, Firebase Auth & Crashlytics |
 | API | Python, Flask, SQLAlchemy 2, Alembic, Flask-Limiter, gunicorn, Docker |
 | AI | Tool-calling agent loop over OpenAI-compatible APIs (Gemini, Groq, Ollama) and Anthropic Claude |
 | Data | PostgreSQL in production, SQLite locally |

@@ -24,6 +24,13 @@ Most expense apps lose users at the same step: data entry. Opening a form, choos
 
 **5. Store-ready from day one.** Firebase Auth (Google, Apple, email), per-user rate limits and a daily AI quota, account deletion that removes all data, hosted privacy and account-deletion pages, and crash reporting are all built in. These are the items Google Play and the App Store review.
 
+## Cross-platform
+One Flutter codebase runs on both Android and iOS with the same features, themes and AI assistant. Both were recorded running against the same Flask backend.
+
+| Android | iOS |
+|---|---|
+| <img src="media/screenshots/02-arc.png" width="220"> | <img src="media/screenshots/ios-02-arc-light.png" width="220"> |
+
 ## Architecture
 ```
 Flutter app ──HTTPS + Firebase ID token──▶ Flask API ──▶ PostgreSQL
