@@ -94,10 +94,12 @@ def update_user(user: User, data: dict) -> User:
 
 def delete_user(user: User) -> None:
     # Explicit deletes so this also works on SQLite without foreign-key enforcement.
-    from .models import ChatUsage
+    from .models import CategoryBudget, ChatUsage, Goal
 
     db.session.query(Expense).filter_by(user_id=user.id).delete()
     db.session.query(ChatUsage).filter_by(user_id=user.id).delete()
+    db.session.query(Goal).filter_by(user_id=user.id).delete()
+    db.session.query(CategoryBudget).filter_by(user_id=user.id).delete()
     db.session.delete(user)
     db.session.commit()
 
@@ -198,3 +200,73 @@ def budget_status(user: User, today: date | None = None) -> dict:
         result["safe_per_day"] = round(max(remaining, 0) / days_left, 2)
         result["used_pct"] = round(spent / budget * 100, 1) if budget else None
     return result
+
+
+def expenses_between(user_id: str, start: date, end: date) -> list[Expense]:
+    """Every expense in a date range, oldest first (no limit: used for the coach's month-by-month maths)."""
+    q = (
+        select(Expense)
+        .where(Expense.user_id == user_id, Expense.spent_on >= start, Expense.spent_on <= end)
+        .order_by(Expense.spent_on, Expense.id)
+    )
+    return list(db.session.scalars(q))
+
+
+def first_expense_date(user_id: str) -> date | None:
+    return db.session.scalar(select(func.min(Expense.spent_on)).where(Expense.user_id == user_id))
+
+
+# ---------- goals and category budgets ----------
+
+def parse_name(value, field: str = "name", max_len: int = 80) -> str:
+    name = str(value or "").strip()
+    if not name:
+        raise ValidationError(f"{field} is required")
+    if len(name) > max_len:
+        raise ValidationError(f"{field} must be {max_len} characters or fewer")
+    return name
+
+
+def list_goals(user_id: str) -> list:
+    from .models import Goal
+
+    return list(db.session.scalars(select(Goal).where(Goal.user_id == user_id).order_by(Goal.id)))
+
+
+def create_goal(user_id: str, data: dict):
+    from .models import Goal
+
+    saved = data.get("saved_amount")
+    goal = Goal(
+        user_id=user_id,
+        name=parse_name(data.get("name")),
+        target_amount=parse_amount(data.get("target_amount")),
+        saved_amount=Decimal("0") if saved in (None, "", 0) else parse_amount(saved),
+        target_date=parse_date(data["target_date"], "target_date") if data.get("target_date") else None,
+    )
+    db.session.add(goal)
+    db.session.commit()
+    return goal
+
+
+def list_category_budgets(user_id: str) -> list:
+    from .models import CategoryBudget
+
+    q = select(CategoryBudget).where(CategoryBudget.user_id == user_id).order_by(CategoryBudget.category)
+    return list(db.session.scalars(q))
+
+
+def set_category_budget(user_id: str, category, amount):
+    """Create or replace the monthly limit for one category."""
+    from .models import CategoryBudget
+
+    cat = parse_category(category)
+    value = parse_amount(amount)
+    row = db.session.get(CategoryBudget, (user_id, cat))
+    if row is None:
+        row = CategoryBudget(user_id=user_id, category=cat, amount=value)
+        db.session.add(row)
+    else:
+        row.amount = value
+    db.session.commit()
+    return row

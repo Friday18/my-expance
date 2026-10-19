@@ -38,6 +38,11 @@ def create_app(overrides: dict | None = None) -> Flask:
     app.register_blueprint(public_bp)
     app.register_blueprint(api_bp)
 
+    from .coach import register_cli
+
+    register_cli(app)  # flask coach preview <user_id>
+
+
     @app.errorhandler(HTTPException)
     def _http_error(exc: HTTPException):
         return jsonify({"error": exc.description or exc.name}), exc.code
