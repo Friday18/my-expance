@@ -51,11 +51,12 @@ class MyExpanceApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mode = context.select<SettingsStore, ThemeMode>((s) => s.themeMode);
+    final futuristic = context.select<SettingsStore, bool>((s) => s.futuristic);
     return MaterialApp(
       title: 'My Expance',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
+      theme: futuristic ? AppTheme.calmLight() : AppTheme.light(),
+      darkTheme: futuristic ? AppTheme.calmDark() : AppTheme.dark(),
       themeMode: mode,
       themeAnimationDuration: Motion.of(context, Motion.medium),
       home: const _AuthGate(),

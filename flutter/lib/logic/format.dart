@@ -1,4 +1,4 @@
-/// Money formatting without locale surprises. INR uses Indian grouping (1,25,000).
+// Money formatting without locale surprises. INR uses Indian grouping (1,25,000).
 
 const Map<String, String> _symbols = {
   'INR': '₹',

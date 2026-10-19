@@ -81,7 +81,10 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _signOut(BuildContext context) async {
     final store = context.read<ExpenseStore>();
-    await context.read<AuthService>().signOut();
+    final auth = context.read<AuthService>();
+    // Settings is pushed on top of Home, so close it before the auth gate swaps screens.
+    Navigator.of(context).popUntil((r) => r.isFirst);
+    await auth.signOut();
     store.clear();
   }
 
@@ -111,8 +114,10 @@ class SettingsScreen extends StatelessWidget {
     final store = context.read<ExpenseStore>();
     final auth = context.read<AuthService>();
     final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
     try {
       await store.deleteAccount();
+      navigator.popUntil((r) => r.isFirst);
       await auth.deleteFirebaseAccount();
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Couldn\'t delete account: $e')));
@@ -168,6 +173,16 @@ class SettingsScreen extends StatelessWidget {
         ),
         header('Appearance'),
         Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: SegmentedButton<UiStyle>(
+            segments: [
+              for (final u in UiStyle.values) ButtonSegment(value: u, label: Text(u.label), icon: Icon(u.icon)),
+            ],
+            selected: {settings.uiStyle},
+            onSelectionChanged: (s) => settings.setUiStyle(s.first),
+          ),
+        ),
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SegmentedButton<ThemeMode>(
             segments: const [
@@ -181,7 +196,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.insert_chart_outlined_rounded),
-          title: const Text('Overview chart'),
+          title: Text(settings.futuristic ? 'Insights chart' : 'Overview chart'),
           trailing: DropdownButton<ChartStyle>(
             value: settings.chartStyle,
             underline: const SizedBox.shrink(),

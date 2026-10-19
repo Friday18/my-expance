@@ -13,6 +13,7 @@ import '../widgets/expense_tile.dart';
 import 'expense_editor.dart';
 import 'settings_screen.dart' show showBudgetDialog;
 
+/// Classic style: the original Overview tab.
 class OverviewScreen extends StatelessWidget {
   const OverviewScreen({super.key});
 

@@ -15,6 +15,7 @@ class _Msg {
   final bool error;
 }
 
+/// Classic style: the original Assistant tab. (The Futuristic style uses AskScreen.)
 class AssistantScreen extends StatefulWidget {
   const AssistantScreen({super.key});
 
